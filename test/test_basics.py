@@ -4,7 +4,7 @@ import numpy as np
 
 
 def test_powerlaw():
-    lib = xspectrampoline.get_libXSPEC()
+    lib = xspectrampoline.get_libraries()
     powerlaw = lib.get_model("C_powerlaw")
 
     energy = np.linspace(0.01, 10.0, 100, dtype=np.float64)

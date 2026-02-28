@@ -140,18 +140,18 @@ except OSError:
 lib_XSFunctions.FNINIT()
 
 
-def get_libXSPEC() -> LibXSPEC:
+def get_libraries() -> LibXSPEC:
     """
     Get a handle to all of the XSPEC libraries.
     """
     return LibXSPEC(lib_XS, lib_XSFunctions, lib_XSUtil)
 
 
-def getHEADAS() -> str:
+def get_HEADAS() -> str:
     """
     Returns the HEADAS path currently used by the library.
     """
     return str(__headas_path)
 
 
-__all__ = [getHEADAS]
+__all__ = [get_HEADAS, get_libraries]
