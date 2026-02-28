@@ -36,7 +36,7 @@ jobs:
         include:
           # The platform tags follow the Python wheel naming conventions
           - os: macos-latest
-            platform-tag: py3-none-macos_aarch64
+            platform-tag: py3-none-macosx_15_0_arm64
           - os: ubuntu-latest
             platform-tag: py3-none-linux_x86_64
     steps:

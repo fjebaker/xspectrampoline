@@ -124,7 +124,7 @@ if __name__ == "__main__":
             f"LibXSPEC.{LIBXSPEC_VERSION}.x86_64-linux-gnu-libgfortran5",
         ),
         (
-            "py3-none-macos_aarch64",
+            "py3-none-macosx_15_0_arm64",
             f"LibXSPEC.{LIBXSPEC_VERSION}.aarch64-apple-darwin-libgfortran5",
         ),
     ]
