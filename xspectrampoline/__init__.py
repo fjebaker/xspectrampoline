@@ -23,13 +23,18 @@ if "HEADAS" not in os.environ:
 
 __headas_path = pathlib.Path(os.environ.get("HEADAS"))
 
+
+def _dlopen_wrapper(path: pathlib.Path) -> ctypes.CDLL:
+    return ctypes.CDLL(path, mode=ctypes.RTLD_GLOBAL)
+
+
 # Load the various libraries
 try:
-    lib_XS = ctypes.CDLL(__headas_path / "lib" / f"libXS{SHARED_LIB_EXT}")
-    lib_XSFunctions = ctypes.CDLL(
+    lib_XS = _dlopen_wrapper(__headas_path / "lib" / f"libXS{SHARED_LIB_EXT}")
+    lib_XSFunctions = _dlopen_wrapper(
         __headas_path / "lib" / f"libXSFunctions{SHARED_LIB_EXT}"
     )
-    lib_XSUtil = ctypes.CDLL(__headas_path / "lib" / f"libXSUtil{SHARED_LIB_EXT}")
+    lib_XSUtil = _dlopen_wrapper(__headas_path / "lib" / f"libXSUtil{SHARED_LIB_EXT}")
 except OSError:
     logging.error(traceback.format_exc())
     logging.error(
