@@ -52,9 +52,10 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: packaged-wheels.zip
-      - name: Install wheel
+      - name: Install wheel and test dependencies
         run: |
           python3 -m pip install ./*-${{ matrix.platform-tag }}.whl
+          python3 -m pip install pytest
       - name: Test
         run: |
-          python3 -c "import xspectrampoline"
+          python3 -m pytest -vvv test
