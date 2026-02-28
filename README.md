@@ -95,3 +95,12 @@ make install    # install the wheel on your system
 make clean      # delete all files (include dist) that were generating during
                 # the packaging process
 ```
+
+### Testing locally
+
+Because you need to test the locally installed version of `xspectrampoline`,
+you need to make sure you run `pytest` outside of the root directory. After
+you've installed the wheel, the easiest way to do this is
+```bash
+cd test && pytest -vvv .
+```
