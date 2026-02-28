@@ -44,6 +44,8 @@ jobs:
           - os: ubuntu-latest
             platform-tag: py3-none-linux_x86_64
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
