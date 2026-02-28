@@ -8,7 +8,7 @@ on:
 jobs:
   package:
     runs-on: ubuntu-latest
-    name: linux
+    name: Building wheels
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,8 +22,34 @@ jobs:
       - name: Fetch and compile wheels
         run: |
           make
-      - name: Upload wheels
+      - name: Upload wheel artifact
         uses: actions/upload-artifact@v6
         with:
-          name: packaged-wheels.tar.gz
+          name: packaged-wheels.zip
           path: ./dist
+  test:
+    needs: package
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # The platform tags follow the Python wheel naming conventions
+          - os: macos-latest
+            platform-tag: py3-none-macos_aarch64
+          - os: ubuntu-latest
+            platform-tag: py3-none-linux_x86_64
+      steps:
+        - name: Set up Python
+          uses: actions/setup-python@v6
+          with:
+            python-version: "3.10"
+        - name: Download wheel artifact
+          uses: actions/download-artifact@v7
+          with:
+            name: packaged-wheels.zip
+        - name: Install wheel
+          run: |
+            python3 -m pip install ./*-${{ matrix.platform-tag }}.whl
+        - name: Test
+          run: |
+            python3 -c "import xspectrampoline"
