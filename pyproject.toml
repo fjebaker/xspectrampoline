@@ -1,34 +1,6 @@
-[project]
-name = "xspectrampoline"
-version = "0.0.1"
-authors = [
-  { name="Fergus Baker", email="fergus@cosroe.com" },
-]
-description = "A package for distributing the XSPEC model library."
-readme = "README.md"
-requires-python = ">=3.6"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
-license = "GPL-3.0-or-later"
-license-files = ["LICENSE"]
-
-[project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
-Issues = "https://github.com/pypa/sampleproject/issues"
-
 [build-system]
 requires = [
   "setuptools >= 40.9.0",
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.packages.find]
-where = ["xspectrampoline"]
-
-[tool.setuptools.package-data]
-"*" = ["*.txt"]
