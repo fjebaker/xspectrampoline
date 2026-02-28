@@ -5,7 +5,7 @@ import pathlib
 import traceback
 import logging
 import sys
-import numpy
+import numpy as np
 
 from typing import Optional
 
