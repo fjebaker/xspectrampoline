@@ -12,10 +12,15 @@ LIBXSPEC_VERSION = "v6.35.1"
 
 
 def make_record_entry(filepath: str, package_root: str = "", name="") -> str:
+    sha256 = hashlib.sha256()
     with open(filepath, "rb") as f:
-        digest = hashlib.file_digest(f, "sha256")
+        while True:
+            chunk = f.read(sha256.block_size)
+            if not chunk:
+                break
+            sha256.update(chunk)
 
-    digest_bytes = digest.digest()
+    digest_bytes = sha256.digest()
 
     filesize = os.path.getsize(filepath)
     relative_filename = name or filepath[filepath.find(package_root) :]
@@ -146,4 +151,4 @@ if __name__ == "__main__":
         print(f"No errors occured. Deleting the original wheel '{original_wheel}'")
         os.remove(original_wheel)
     else:
-        print("Errors occured.")
+        raise Exception("Errors Occured")
