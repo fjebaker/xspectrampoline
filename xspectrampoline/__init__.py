@@ -4,6 +4,9 @@ import os
 import pathlib
 import traceback
 import logging
+import sys
+
+SHARED_LIB_EXT = ".so" if sys.platform.startswith("linux") else ".dylib"
 
 
 class NoLibXSPEC(Exception): ...
@@ -22,9 +25,11 @@ __headas_path = pathlib.Path(os.environ.get("HEADAS"))
 
 # Load the various libraries
 try:
-    lib_XS = ctypes.CDLL(__headas_path / "lib" / "libXS.so")
-    lib_XSFunctions = ctypes.CDLL(__headas_path / "lib" / "libXSFunctions.so")
-    lib_XSUtil = ctypes.CDLL(__headas_path / "lib" / "libXSUtil.so")
+    lib_XS = ctypes.CDLL(__headas_path / "lib" / f"libXS{SHARED_LIB_EXT}")
+    lib_XSFunctions = ctypes.CDLL(
+        __headas_path / "lib" / f"libXSFunctions{SHARED_LIB_EXT}"
+    )
+    lib_XSUtil = ctypes.CDLL(__headas_path / "lib" / f"libXSUtil{SHARED_LIB_EXT}")
 except OSError:
     logging.error(traceback.format_exc())
     logging.error(
