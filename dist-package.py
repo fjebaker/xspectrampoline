@@ -5,17 +5,20 @@ import hashlib
 import pathlib
 import time
 import zipfile
+import base64
 
 def make_record_entry(filepath: str, package_root: str="", name="") -> str:
     with open(filepath, "rb") as f:
         digest = hashlib.file_digest(f, "sha256")
 
-    hex_digest = digest.hexdigest()
+    digest_bytes = digest.digest()
 
     filesize = os.path.getsize(filepath)
     relative_filename = name or filepath[filepath.find(package_root):]
 
-    return f"{relative_filename},sha256={hex_digest},{filesize}"
+    base64_digest = base64.urlsafe_b64encode(digest_bytes).rstrip(b'=').decode()
+
+    return f"{relative_filename},sha256={base64_digest},{filesize}"
 
 def zipdir(path: str, zf: zipfile.ZipFile):
     for root, dirs, files in os.walk(path):
@@ -62,6 +65,11 @@ def repackage(root: str, filename: str, platform_tag: str = "py3-none-linux_x86_
 
     new_record = record_entries + record_file.read_text().splitlines()
     new_record = [r for r in new_record if "info/WHEEL,sha" not in r] + [wheel_record]
+
+    # Do a quick swap
+    _tmp = new_record[-2]
+    new_record[-2] = new_record[-1]
+    new_record[-1] = _tmp
 
     record_file.write_text("\n".join(new_record))
 
