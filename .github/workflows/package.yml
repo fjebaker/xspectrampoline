@@ -39,18 +39,18 @@ jobs:
             platform-tag: py3-none-macos_aarch64
           - os: ubuntu-latest
             platform-tag: py3-none-linux_x86_64
-      steps:
-        - name: Set up Python
-          uses: actions/setup-python@v6
-          with:
-            python-version: "3.10"
-        - name: Download wheel artifact
-          uses: actions/download-artifact@v7
-          with:
-            name: packaged-wheels.zip
-        - name: Install wheel
-          run: |
-            python3 -m pip install ./*-${{ matrix.platform-tag }}.whl
-        - name: Test
-          run: |
-            python3 -c "import xspectrampoline"
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+      - name: Download wheel artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: packaged-wheels.zip
+      - name: Install wheel
+        run: |
+          python3 -m pip install ./*-${{ matrix.platform-tag }}.whl
+      - name: Test
+        run: |
+          python3 -c "import xspectrampoline"
