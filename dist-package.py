@@ -9,6 +9,7 @@ import base64
 import traceback
 
 LIBXSPEC_VERSION = "v6.35.1"
+COMPILER_SUPPORT_VERSION = "v1.3.1"
 
 
 def make_record_entry(filepath: str, package_root: str = "", name="") -> str:
@@ -40,7 +41,11 @@ def zipdir(path: str, zf: zipfile.ZipFile):
 
 
 def repackage(
-    root: str, filename: str, libxspec: str, platform_tag: str = "py3-none-linux_x86_64"
+    root: str,
+    filename: str,
+    libxspec: str,
+    support: str,
+    platform_tag: str = "py3-none-linux_x86_64",
 ):
     # TODO: get the version string from the filename
     version = "0.1.0"
@@ -56,6 +61,13 @@ def repackage(
     xspec_dir_path = os.path.join(root, xspec_dir)
 
     shutil.copytree(os.path.join("artifacts", libxspec), xspec_dir_path)
+    # Copy the CompilerSupportLibraries and merge lib and share
+    for directory in ("lib", "share"):
+        shutil.copytree(
+            os.path.join("artifacts", support, directory),
+            os.path.join(xspec_dir_path, directory),
+            dirs_exist_ok=True,
+        )
 
     record_entries = []
     for dirpath, dirnames, filenames in os.walk(xspec_dir_path):
@@ -122,23 +134,26 @@ if __name__ == "__main__":
         (
             "py3-none-linux_x86_64",
             f"LibXSPEC.{LIBXSPEC_VERSION}.x86_64-linux-gnu-libgfortran5",
+            f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.x86_64-linux-gnu-libgfortran5",
         ),
         (
             "py3-none-macosx_15_0_arm64",
             f"LibXSPEC.{LIBXSPEC_VERSION}.aarch64-apple-darwin-libgfortran5",
+            f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.aarch64-apple-darwin-libgfortran5",
         ),
     ]
     original_wheel = "./dist/xspectrampoline-0.1.0-py3-none-any.whl"
 
     no_errors = True
 
-    for platform_tag, libxspec in platform_info:
+    for platform_tag, libxspec, support in platform_info:
         print(f"Packaging for {platform_tag}")
         try:
             repackage(
                 os.path.abspath("delete-me"),
                 original_wheel,
                 libxspec,
+                support,
                 platform_tag=platform_tag,
             )
         except Exception as e:
