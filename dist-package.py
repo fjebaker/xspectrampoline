@@ -14,19 +14,22 @@ COMPILER_SUPPORT_VERSION = "v1.3.1"
 
 FILES_TO_REMOVE = [
     # From LibXSPEC
-    "libcfitsio.10.4.6.0.SHARED_EXT",
+    # Archives
     "libcfitsio.a",
+    "libfftw3.a",
+    "libfgsl.a",
+    "libgslcblas.a",
+    "libgsl.a",
+    "libwcs-8.3.a",
+    # Symlinks and unused shared libraries
+    "libcfitsio.10.4.6.0.SHARED_EXT",
     "libcfitsio.SHARED_EXT",
     "libcfitsio.SHARED_EXT.10.0.0",
     "libcfitsio.SHARED_EXT.10.4.6.0",
-    "libfftw3.a",
     "libfftw3.SHARED_EXT",
     "libfftw3.SHARED_EXT.3.6.10",
-    "libfgsl.a",
     "libfgsl.SHARED_EXT",
     "libfgsl.SHARED_EXT.1.0.5",
-    "libgslcblas.a",
-    "libgsl.a",
     "libgslcblas.SHARED_EXT",
     "libgslcblas.SHARED_EXT.0.0.0",
     "libgsl.SHARED_EXT",
@@ -37,7 +40,6 @@ FILES_TO_REMOVE = [
     "libreadline.8.2.SHARED_EXT",
     "libreadline.SHARED_EXT",
     "libreadline.SHARED_EXT.8.2",
-    "libwcs-8.3.a",
     # From CompilerSupportLibraries
     "libasan.SHARED_EXT",
     "libasan.SHARED_EXT.8",
@@ -76,6 +78,7 @@ FILES_TO_REMOVE = [
     "libubsan.SHARED_EXT.1",
     "libubsan.SHARED_EXT.1.0.0",
 ]
+
 
 def get_files_to_remove(platform_tag: str) -> list[str]:
     if "linux" in platform_tag:
