@@ -125,7 +125,7 @@ try:
         __headas_path / "lib" / f"libXSFunctions{SHARED_LIB_EXT}"
     )
     lib_XSUtil = _dlopen_wrapper(__headas_path / "lib" / f"libXSUtil{SHARED_LIB_EXT}")
-except OSError, FileNotFoundError:
+except (OSError, FileNotFoundError):
     logging.error(traceback.format_exc())
     logging.error(
         "Failed to load LibXSPEC. If you have $HEADAS set in your envrionment, "
