@@ -13,6 +13,7 @@ setup(
     description="A package for distributing the HEASOFT / XSPEC model library.",
     keywords=["xspec", "heasoft"],
     long_description=readme,
+    long_description_content_type="text/markdown",
     python_requires=">=3.6",
     install_requires=["numpy>=1.24"],
     license="GPL-3.0-or-later",
