@@ -7,7 +7,8 @@ COMPILERSUPPORT_BUILD_VERSION = +0
 ARTIFACTS_DIR := artifacts
 
 ALL_PLATFORMS := x86_64-linux-gnu-libgfortran5 \
-				 aarch64-apple-darwin-libgfortran5
+				 aarch64-apple-darwin-libgfortran5 \
+				 x86_64-apple-darwin-libgfortran5
 
 ALL_LIBXSPEC_PATHS := $(foreach PLAT,$(ALL_PLATFORMS),LibXSPEC.$(LIBXSPEC_VERSION).$(PLAT))
 ALL_SUPPORT_PATHS := $(foreach PLAT,$(ALL_PLATFORMS),CompilerSupportLibraries.$(COMPILERSUPPORT_VERSION).$(PLAT))

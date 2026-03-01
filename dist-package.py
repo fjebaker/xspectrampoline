@@ -240,6 +240,16 @@ if __name__ == "__main__":
             f"LibXSPEC.{LIBXSPEC_VERSION}.aarch64-apple-darwin-libgfortran5",
             f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.aarch64-apple-darwin-libgfortran5",
         ),
+        (
+            "py3-none-macosx_14_0_arm64",
+            f"LibXSPEC.{LIBXSPEC_VERSION}.aarch64-apple-darwin-libgfortran5",
+            f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.aarch64-apple-darwin-libgfortran5",
+        ),
+        (
+            "py3-none-macosx_14_0_x86_64",
+            f"LibXSPEC.{LIBXSPEC_VERSION}.x86_64-apple-darwin-libgfortran5",
+            f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.x86_64-apple-darwin-libgfortran5",
+        ),
     ]
     original_wheel = f"./dist/xspectrampoline-{XSPECTRAMPOLINE_VERSION}-py3-none-any.whl"
 
