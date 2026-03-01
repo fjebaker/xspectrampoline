@@ -12,9 +12,94 @@ import subprocess
 LIBXSPEC_VERSION = "v6.35.1"
 COMPILER_SUPPORT_VERSION = "v1.3.1"
 
+FILES_TO_REMOVE = [
+    # From LibXSPEC
+    "libcfitsio.10.4.6.0.SHARED_EXT",
+    "libcfitsio.a",
+    "libcfitsio.SHARED_EXT",
+    "libcfitsio.SHARED_EXT.10.0.0",
+    "libcfitsio.SHARED_EXT.10.4.6.0",
+    "libfftw3.a",
+    "libfftw3.SHARED_EXT",
+    "libfftw3.SHARED_EXT.3.6.10",
+    "libfgsl.a",
+    "libfgsl.SHARED_EXT",
+    "libfgsl.SHARED_EXT.1.0.5",
+    "libgslcblas.a",
+    "libgsl.a",
+    "libgslcblas.SHARED_EXT",
+    "libgslcblas.SHARED_EXT.0.0.0",
+    "libgsl.SHARED_EXT",
+    "libgsl.SHARED_EXT.25.1.0",
+    "libhistory.SHARED_EXT",
+    "libhistory.SHARED_EXT.8",
+    "libhistory.SHARED_EXT.8.2",
+    "libreadline.8.2.SHARED_EXT",
+    "libreadline.SHARED_EXT",
+    "libreadline.SHARED_EXT.8.2",
+    "libwcs-8.3.a",
+    # From CompilerSupportLibraries
+    "libasan.SHARED_EXT",
+    "libasan.SHARED_EXT.8",
+    "libasan.SHARED_EXT.8.0.0",
+    "libatomic.SHARED_EXT",
+    "libatomic.SHARED_EXT.1",
+    "libatomic.SHARED_EXT.1.2.0",
+    "libgfortran.SHARED_EXT",
+    "libgfortran.SHARED_EXT.5.0.0",
+    "libgomp.SHARED_EXT",
+    "libgomp.SHARED_EXT.1",
+    "libgomp.SHARED_EXT.1.0.0",
+    "libhwasan.SHARED_EXT",
+    "libhwasan.SHARED_EXT.0",
+    "libhwasan.SHARED_EXT.0.0.0",
+    "libitm.SHARED_EXT",
+    "libitm.SHARED_EXT.1",
+    "libitm.SHARED_EXT.1.0.0",
+    "liblsan.SHARED_EXT",
+    "liblsan.SHARED_EXT.0",
+    "liblsan.SHARED_EXT.0.0.0",
+    "libobjc.SHARED_EXT",
+    "libobjc.SHARED_EXT.4",
+    "libobjc.SHARED_EXT.4.0.0",
+    "libquadmath.SHARED_EXT",
+    "libquadmath.SHARED_EXT.0.0.0",
+    "libssp.SHARED_EXT",
+    "libssp.SHARED_EXT.0",
+    "libssp.SHARED_EXT.0.0.0",
+    "libstdc++.SHARED_EXT",
+    "libstdc++.SHARED_EXT.6.0.33",
+    "libtsan.SHARED_EXT",
+    "libtsan.SHARED_EXT.2",
+    "libtsan.SHARED_EXT.2.0.0",
+    "libubsan.SHARED_EXT",
+    "libubsan.SHARED_EXT.1",
+    "libubsan.SHARED_EXT.1.0.0",
+]
+
+def get_files_to_remove(platform_tag: str) -> list[str]:
+    if "linux" in platform_tag:
+        shared_ext = "so"
+    elif "macosx" in platform_tag:
+        shared_ext = "dylib"
+    else:
+        raise Exception(f"Unsupported platform tag '{platform_tag}'")
+
+    return [f.replace("SHARED_EXT", shared_ext) for f in FILES_TO_REMOVE]
+
+
 def copy_tree(src: str, dest: str):
-    cmd = ["rsync", "-a", src, dest]
-    subprocess.run(cmd, check=True)
+    # This will also expand all symlinks to their original files
+    shutil.copytree(src, dest, symlinks=False, dirs_exist_ok=True)
+
+
+def cleanup_libxspec(directory: str, platform_tag: str):
+    files_to_remove = get_files_to_remove(platform_tag)
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            fullpath = os.path.join(root, file)
+            if file in files_to_remove:
+                os.remove(fullpath)
 
 
 def make_record_entry(filepath: str, package_root: str = "", name="") -> str:
@@ -65,15 +150,17 @@ def repackage(
     # The actual path on the machine to where the files currently are
     xspec_dir_path = os.path.join(root, xspec_dir)
 
-    copy_tree(os.path.join("artifacts", libxspec) + "/", xspec_dir_path)
-
+    copy_tree(os.path.join("artifacts", libxspec), xspec_dir_path)
 
     # Copy the CompilerSupportLibraries and merge lib and share
     for directory in ("lib", "share"):
         copy_tree(
-            os.path.join("artifacts", support, directory) + "/",
+            os.path.join("artifacts", support, directory),
             os.path.join(xspec_dir_path, directory),
         )
+
+    # Cleanup files that are not needed
+    cleanup_libxspec(xspec_dir_path, platform_tag)
 
     record_entries = []
     for dirpath, dirnames, filenames in os.walk(xspec_dir_path):
