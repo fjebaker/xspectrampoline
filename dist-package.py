@@ -9,8 +9,10 @@ import base64
 import traceback
 import subprocess
 
+
 def get_xspectrampoline_version() -> str:
     return (pathlib.Path("xspectrampoline") / "VERSION").read_text().strip()
+
 
 XSPECTRAMPOLINE_VERSION = get_xspectrampoline_version()
 LIBXSPEC_VERSION = "v6.35.1"
@@ -79,7 +81,9 @@ def get_files_to_remove(platform_tag: str) -> list[str]:
 
     # Read the files that are symlinked but not strictly needed
     symlinks = pathlib.Path("./xspectrampoline/LINKEDFILES").read_text().splitlines()
-    symlinks = [i.split("->")[0].strip().replace("SHARED_EXT", shared_ext) for i in symlinks]
+    symlinks = [
+        i.split("->")[0].strip().replace("SHARED_EXT", shared_ext) for i in symlinks
+    ]
     return [f.replace("SHARED_EXT", shared_ext) for f in FILES_TO_REMOVE] + symlinks
 
 
@@ -196,12 +200,16 @@ def repackage(
     os.mkdir(os.path.join(root, new_dir))
     shutil.move(str(dist_info_path), new_dir)
     shutil.move(os.path.join(root, "xspectrampoline"), new_dir)
+    shutil.move(os.path.join(root, "xspectrampoline_helpers"), new_dir)
 
     # Now rezip and pray. Need to use zipfile here because of the timestamps of
     # the files
     new_wheel = f"{new_name}.whl"
     with zipfile.ZipFile(
-        new_wheel, "w", strict_timestamps=False, compression=zipfile.ZIP_DEFLATED,
+        new_wheel,
+        "w",
+        strict_timestamps=False,
+        compression=zipfile.ZIP_DEFLATED,
     ) as zf:
         zipdir(new_dir + "/", zf)
 
@@ -239,7 +247,9 @@ if __name__ == "__main__":
             f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.x86_64-apple-darwin-libgfortran5",
         ),
     ]
-    original_wheel = f"./dist/xspectrampoline-{XSPECTRAMPOLINE_VERSION}-py3-none-any.whl"
+    original_wheel = (
+        f"./dist/xspectrampoline-{XSPECTRAMPOLINE_VERSION}-py3-none-any.whl"
+    )
 
     no_errors = True
 
@@ -257,10 +267,10 @@ if __name__ == "__main__":
             print(traceback.format_exc())
             no_errors = False
 
-    shutil.rmtree(tmpdir)
+    # shutil.rmtree(tmpdir)
 
     if no_errors:
         print(f"No errors occured. Deleting the original wheel '{original_wheel}'")
-        os.remove(original_wheel)
+        # os.remove(original_wheel)
     else:
         raise Exception("Errors Occured")

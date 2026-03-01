@@ -19,7 +19,11 @@ setup(
     license="GPL-3.0-or-later",
     name=package_name,
     version=version,
-    packages=[package_name],
+    packages=[package_name, f"{package_name}_helpers"],
+    package_dir={
+        package_name: package_name,
+        f"{package_name}_helpers": os.path.join(package_name, "helpers"),
+    },
     url=f"https://github.com/fjebaker/{package_name}",
     classifiers=[
         "Natural Language :: English",

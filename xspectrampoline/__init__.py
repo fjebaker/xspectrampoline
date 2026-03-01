@@ -1,30 +1,18 @@
-import importlib.resources
 import ctypes
-import os
 import pathlib
 import traceback
 import logging
-import sys
 import numpy as np
 
-from typing import Optional
+import xspectrampoline_helpers as helpers
 
-SHARED_LIB_EXT = ".so" if sys.platform.startswith("linux") else ".dylib"
+from typing import Optional
 
 
 class NoLibXSPEC(Exception): ...
 
 
 logger = logging.getLogger(__name__)
-
-__xspectrampoline_path = (
-    importlib.resources.files("xspectrampoline") / "LibXSPEC_v6_35_1"
-)
-
-if "HEADAS" not in os.environ:
-    os.environ["HEADAS"] = str(__xspectrampoline_path)
-
-__headas_path = pathlib.Path(os.environ.get("HEADAS"))
 
 
 def _dlopen_wrapper(path: pathlib.Path) -> ctypes.CDLL:
@@ -120,11 +108,15 @@ class LibXSPEC:
 
 # Load the various libraries
 try:
-    lib_XS = _dlopen_wrapper(__headas_path / "lib" / f"libXS{SHARED_LIB_EXT}")
-    lib_XSFunctions = _dlopen_wrapper(
-        __headas_path / "lib" / f"libXSFunctions{SHARED_LIB_EXT}"
+    lib_XS = _dlopen_wrapper(
+        helpers._headas_path / "lib" / f"libXS.{helpers.SHARED_LIB_EXT}"
     )
-    lib_XSUtil = _dlopen_wrapper(__headas_path / "lib" / f"libXSUtil{SHARED_LIB_EXT}")
+    lib_XSFunctions = _dlopen_wrapper(
+        helpers._headas_path / "lib" / f"libXSFunctions.{helpers.SHARED_LIB_EXT}"
+    )
+    lib_XSUtil = _dlopen_wrapper(
+        helpers._headas_path / "lib" / f"libXSUtil.{helpers.SHARED_LIB_EXT}"
+    )
 except (OSError, FileNotFoundError):
     logging.error(traceback.format_exc())
     logging.error(
@@ -147,11 +139,10 @@ def get_libraries() -> LibXSPEC:
     return LibXSPEC(lib_XS, lib_XSFunctions, lib_XSUtil)
 
 
-def get_HEADAS() -> str:
-    """
-    Returns the HEADAS path currently used by the library.
-    """
-    return str(__headas_path)
+# Create binding
+get_HEADAS = helpers.get_HEADAS
 
-
-__all__ = [get_HEADAS, get_libraries]
+__all__ = [
+    get_HEADAS,
+    get_libraries,
+]
