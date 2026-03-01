@@ -1,0 +1,15 @@
+libcfitsio.10.4.6.0.SHARED_EXT -> libcfitsio.SHARED_EXT.10
+libcfitsio.SHARED_EXT.10.0.0 -> libcfitsio.SHARED_EXT.10
+libcfitsio.SHARED_EXT.10.4.6.0 -> libcfitsio.SHARED_EXT.10
+libcfitsio.SHARED_EXT -> libcfitsio.SHARED_EXT.10
+libfftw3.SHARED_EXT.3.6.10 -> libfftw3.SHARED_EXT
+libfftw3.SHARED_EXT -> libfftw3.SHARED_EXT.3
+libfgsl.SHARED_EXT.1.0.5 -> libfgsl.SHARED_EXT.1
+libfgsl.SHARED_EXT -> libfgsl.SHARED_EXT.1
+libgslcblas.SHARED_EXT.0.0.0 -> libgslcblas.SHARED_EXT.0
+libgslcblas.SHARED_EXT -> libgslcblas.SHARED_EXT.0
+libgsl.SHARED_EXT.25.1.0 -> libgsl.SHARED_EXT.25
+libgsl.SHARED_EXT -> libgsl.SHARED_EXT.25
+libreadline.8.2.SHARED_EXT -> libreadline.SHARED_EXT.8
+libreadline.SHARED_EXT.8.2 -> libreadline.SHARED_EXT.8
+libreadline.SHARED_EXT -> libreadline.SHARED_EXT.8

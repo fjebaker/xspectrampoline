@@ -26,24 +26,9 @@ FILES_TO_REMOVE = [
     "libgsl.a",
     "libwcs-8.3.a",
     # Symlinks and unused shared libraries
-    "libcfitsio.10.4.6.0.SHARED_EXT",
-    "libcfitsio.SHARED_EXT",
-    "libcfitsio.SHARED_EXT.10.0.0",
-    "libcfitsio.SHARED_EXT.10.4.6.0",
-    "libfftw3.SHARED_EXT",
-    "libfftw3.SHARED_EXT.3.6.10",
-    "libfgsl.SHARED_EXT",
-    "libfgsl.SHARED_EXT.1.0.5",
-    "libgslcblas.SHARED_EXT",
-    "libgslcblas.SHARED_EXT.0.0.0",
-    "libgsl.SHARED_EXT",
-    "libgsl.SHARED_EXT.25.1.0",
     "libhistory.SHARED_EXT",
     "libhistory.SHARED_EXT.8",
     "libhistory.SHARED_EXT.8.2",
-    "libreadline.8.2.SHARED_EXT",
-    "libreadline.SHARED_EXT",
-    "libreadline.SHARED_EXT.8.2",
     # From CompilerSupportLibraries
     "libasan.SHARED_EXT",
     "libasan.SHARED_EXT.8",
@@ -92,7 +77,10 @@ def get_files_to_remove(platform_tag: str) -> list[str]:
     else:
         raise Exception(f"Unsupported platform tag '{platform_tag}'")
 
-    return [f.replace("SHARED_EXT", shared_ext) for f in FILES_TO_REMOVE]
+    # Read the files that are symlinked but not strictly needed
+    symlinks = pathlib.Path("./xspectrampoline/LINKEDFILES").read_text().splitlines()
+    symlinks = [i.split("->")[0].strip().replace("SHARED_EXT", shared_ext) for i in symlinks]
+    return [f.replace("SHARED_EXT", shared_ext) for f in FILES_TO_REMOVE] + symlinks
 
 
 def copy_tree(src: str, dest: str):
