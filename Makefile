@@ -50,7 +50,7 @@ wheels:
 
 .PHONY: install
 install:
-	python -m pip install dist/xspectrampoline-0.1.0-py3-none-manylinux_2_24_x86_64.whl
+	python -m pip install dist/xspectrampoline-*-py3-none-manylinux_2_24_x86_64.whl
 
 .PHONY: clean
 clean: clean-dist

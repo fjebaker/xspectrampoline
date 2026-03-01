@@ -9,6 +9,10 @@ import base64
 import traceback
 import subprocess
 
+def get_xspectrampoline_version() -> str:
+    return (pathlib.Path("xspectrampoline") / "VERSION").read_text().strip()
+
+XSPECTRAMPOLINE_VERSION = get_xspectrampoline_version()
 LIBXSPEC_VERSION = "v6.35.1"
 COMPILER_SUPPORT_VERSION = "v1.3.1"
 
@@ -140,9 +144,6 @@ def repackage(
     support: str,
     platform_tag: str = "py3-none-manylinux_2_24_x86_64",
 ):
-    # TODO: get the version string from the filename
-    version = "0.1.0"
-
     filepath = os.path.join(root, os.path.basename(filename))
     shutil.copy(filename, filepath)
 
@@ -174,7 +175,7 @@ def repackage(
         )
 
     # Rewrite the tag for the particular place we're packaging
-    dist_info_name = f"xspectrampoline-{version}.dist-info"
+    dist_info_name = f"xspectrampoline-{XSPECTRAMPOLINE_VERSION}.dist-info"
     dist_info_path = pathlib.Path(root) / dist_info_name
 
     wheel_path = dist_info_path / "WHEEL"
@@ -202,7 +203,7 @@ def repackage(
     # TODO: copy over the licenses
 
     # Move everything into a directory
-    new_name = f"xspectrampoline-{version}-{platform_tag}"
+    new_name = f"xspectrampoline-{XSPECTRAMPOLINE_VERSION}-{platform_tag}"
     new_dir = os.path.join(root, new_name)
     os.mkdir(os.path.join(root, new_dir))
     shutil.move(str(dist_info_path), new_dir)
@@ -240,7 +241,7 @@ if __name__ == "__main__":
             f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.aarch64-apple-darwin-libgfortran5",
         ),
     ]
-    original_wheel = "./dist/xspectrampoline-0.1.0-py3-none-any.whl"
+    original_wheel = f"./dist/xspectrampoline-{XSPECTRAMPOLINE_VERSION}-py3-none-any.whl"
 
     no_errors = True
 

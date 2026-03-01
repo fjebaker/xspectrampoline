@@ -3,8 +3,8 @@ import os
 import pathlib
 from setuptools import setup
 
-version = "0.1.0"
 package_name = "xspectrampoline"
+version = (pathlib.Path(package_name) / "VERSION").read_text().strip()
 readme = pathlib.Path("README.md").read_text()
 
 setup(
