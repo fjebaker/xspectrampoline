@@ -208,7 +208,9 @@ def repackage(
     # Now rezip and pray. Need to use zipfile here because of the timestamps of
     # the files
     new_wheel = f"{new_name}.whl"
-    with zipfile.ZipFile(new_wheel, "w", strict_timestamps=False) as zf:
+    with zipfile.ZipFile(
+        new_wheel, "w", strict_timestamps=False, compression=zipfile.ZIP_ZSTANDARD
+    ) as zf:
         zipdir(new_dir + "/", zf)
 
     # And restore it's location
