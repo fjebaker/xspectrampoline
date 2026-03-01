@@ -138,7 +138,7 @@ def repackage(
     filename: str,
     libxspec: str,
     support: str,
-    platform_tag: str = "py3-none-linux_x86_64",
+    platform_tag: str = "py3-none-manylinux_2_24_x86_64",
 ):
     # TODO: get the version string from the filename
     version = "0.1.0"
@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
     platform_info = [
         (
-            "py3-none-linux_x86_64",
+            "py3-none-manylinux_2_24_x86_64",
             f"LibXSPEC.{LIBXSPEC_VERSION}.x86_64-linux-gnu-libgfortran5",
             f"CompilerSupportLibraries.{COMPILER_SUPPORT_VERSION}.x86_64-linux-gnu-libgfortran5",
         ),

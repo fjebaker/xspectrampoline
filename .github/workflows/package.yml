@@ -42,7 +42,7 @@ jobs:
           - os: macos-latest
             platform-tag: py3-none-macosx_15_0_arm64
           - os: ubuntu-latest
-            platform-tag: py3-none-linux_x86_64
+            platform-tag: py3-none-manylinux_2_24_x86_64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
