@@ -7,9 +7,14 @@ import time
 import zipfile
 import base64
 import traceback
+import subprocess
 
 LIBXSPEC_VERSION = "v6.35.1"
 COMPILER_SUPPORT_VERSION = "v1.3.1"
+
+def copy_tree(src: str, dest: str):
+    cmd = ["rsync", "-a", src, dest]
+    subprocess.run(cmd, check=True)
 
 
 def make_record_entry(filepath: str, package_root: str = "", name="") -> str:
@@ -60,13 +65,14 @@ def repackage(
     # The actual path on the machine to where the files currently are
     xspec_dir_path = os.path.join(root, xspec_dir)
 
-    shutil.copytree(os.path.join("artifacts", libxspec), xspec_dir_path)
+    copy_tree(os.path.join("artifacts", libxspec) + "/", xspec_dir_path)
+
+
     # Copy the CompilerSupportLibraries and merge lib and share
     for directory in ("lib", "share"):
-        shutil.copytree(
-            os.path.join("artifacts", support, directory),
+        copy_tree(
+            os.path.join("artifacts", support, directory) + "/",
             os.path.join(xspec_dir_path, directory),
-            dirs_exist_ok=True,
         )
 
     record_entries = []
