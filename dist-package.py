@@ -212,7 +212,7 @@ def repackage(
     # the files
     new_wheel = f"{new_name}.whl"
     with zipfile.ZipFile(
-        new_wheel, "w", strict_timestamps=False, compression=zipfile.ZIP_ZSTANDARD
+        new_wheel, "w", strict_timestamps=False, compression=zipfile.ZIP_DEFLATED,
     ) as zf:
         zipdir(new_dir + "/", zf)
 
