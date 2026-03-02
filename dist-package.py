@@ -266,10 +266,10 @@ if __name__ == "__main__":
             print(traceback.format_exc())
             no_errors = False
 
-    # shutil.rmtree(tmpdir)
+    shutil.rmtree(tmpdir)
 
     if no_errors:
         print(f"No errors occured. Deleting the original wheel '{original_wheel}'")
-        # os.remove(original_wheel)
+        os.remove(original_wheel)
     else:
         raise Exception("Errors Occured")
