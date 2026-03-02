@@ -143,12 +143,32 @@ def get_linker_flags(libraries: list[str], rpath_relative: bool = False) -> list
 
     linker_flags = [f"-l:{lib}" for lib in selected_libraries]
 
-    if rpath_relative:
-        rpath_flag = f"-Wl,-rpath'$ORIGIN/../xspectrampoline/{LIBXSPEC}/lib'"
-    else:
-        rpath_flag = f"-Wl,-rpath'{_headas_path}'"
+    lib_path = os.path.normpath(os.path.join(_headas_path, "lib"))
 
-    return [f"-L{_headas_path}", rpath_flag] + linker_flags
+    if rpath_relative:
+        rpath_flag = f"-Wl,-rpath,$ORIGIN/../xspectrampoline/{LIBXSPEC}/lib"
+    else:
+        rpath_flag = f"-Wl,-rpath,{lib_path}"
+
+    return [rpath_flag, f"-L{lib_path}"] + linker_flags
+
+
+def get_artifact_dir(package_name: str) -> pathlib.Path:
+    """
+    Get the path to the location where artifacts for a package are installed to.
+    """
+    return _xspectrampoline_path / ".." / package_name
+
+
+def get_model_data_dir() -> pathlib.Path:
+    """
+    Get the path to the location where model data should be installed to.
+    """
+    model_data_dir = _libxspec_path / "spectral" / "modelData"
+    # Create the directory if it does not exist.
+    if not model_data_dir.is_dir():
+        os.mkdir(model_data_dir)
+    return model_data_dir
 
 
 __all__ = [
@@ -158,4 +178,6 @@ __all__ = [
     remove_symlinks,
     get_linker_flags,
     list_libraries,
+    get_artifact_dir,
+    get_model_data_dir,
 ]
