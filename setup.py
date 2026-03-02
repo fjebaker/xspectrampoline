@@ -32,5 +32,5 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     include_package_data=True,
-    package_data={"xspectrampoline": ["LINKEDFILES", "VERSION"]},
+    package_data={package_name: ["LINKEDFILES", "VERSION"]},
 )

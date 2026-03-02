@@ -7,7 +7,6 @@ import time
 import zipfile
 import base64
 import traceback
-import subprocess
 
 
 def get_xspectrampoline_version() -> str:
