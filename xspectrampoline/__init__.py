@@ -87,12 +87,15 @@ class LibXSPEC:
 
         return _wrapper
 
-    def get_model(self, symbol: str, interface: Optional[str] = None) -> callable:
+    def get_model(
+        self, symbol: str, interface: Optional[str] = None, lib=None
+    ) -> callable:
         """
         Obtain a callable that invokes a model with the standard XSPEC model
         interface.
         """
-        f = getattr(self.lib_xs_functions, symbol)
+        lib = lib or self.lib_xs_functions
+        f = getattr(lib, symbol)
         if interface == "fortan" or symbol.endswith("_"):
             return self._wrap_Fortran_interface(f)
         elif interface == "c" or symbol.startswith("C_"):
