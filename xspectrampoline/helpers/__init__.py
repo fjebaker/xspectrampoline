@@ -103,7 +103,7 @@ def list_libraries() -> list[str]:
     """
     libraries = []
     for file in (_libxspec_path / "lib").iterdir():
-        if SHARED_LIB_EXT in file.name:
+        if SHARED_LIB_EXT in file.name or file.name.endswith(".a"):
             libraries.append(file.name)
     return libraries
 
@@ -131,19 +131,24 @@ def get_linker_flags(libraries: list[str], rpath_relative: bool = False) -> list
     """
     available_libraries = list_libraries()
     selected_libraries = set()
+
+    lib_path = os.path.normpath(os.path.join(_headas_path, "lib"))
+
     for lib in libraries:
         found = False
         for _lib in available_libraries:
             if lib in _lib:
-                selected_libraries.add(_lib)
+                # Get the absolute file path
+                selected_libraries.add(os.path.join(lib_path, _lib))
                 found = True
                 break
         if not found:
             raise UnknownLibrary(lib)
 
-    linker_flags = [f"-l:{lib}" for lib in selected_libraries]
-
-    lib_path = os.path.normpath(os.path.join(_headas_path, "lib"))
+    # This is a fix for portability on MacOS. Since the `-l:libfullname.so`
+    # doesn't work for the gfortran compiler, we can instead just pass the
+    # absolute filepath directly. It fortunately also works on Linux.
+    linker_flags = list(selected_libraries)
 
     if rpath_relative:
         rpath_flag = f"-Wl,-rpath,$ORIGIN/../xspectrampoline/{LIBXSPEC}/lib"
