@@ -21,7 +21,6 @@ FILES_TO_REMOVE = [
     # From LibXSPEC
     # Archives
     "libcfitsio.a",
-    "libfftw3.a",
     "libfgsl.a",
     "libgslcblas.a",
     "libgsl.a",
