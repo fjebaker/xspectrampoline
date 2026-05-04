@@ -30,6 +30,10 @@ if "HEADAS" not in os.environ:
 _headas_path = pathlib.Path(os.environ.get("HEADAS"))
 
 
+def _target_is_macos(target: str) -> bool:
+    return target == "macos"
+
+
 def get_HEADAS() -> str:
     """
     Returns the HEADAS path currently used by the library.
@@ -108,18 +112,20 @@ def list_libraries() -> list[str]:
     return libraries
 
 
-def get_linker_flags(libraries: list[str], rpath_relative: bool = False) -> list[str]:
+def get_linker_flags(
+    libraries: list[str], rpath_relative: bool = False, target: str = sys.platform
+) -> list[str]:
     """
     Returns the linker flags needed to compile a model with given libraries.
     Example usage:
 
-        xspectrampoline.get_linker_flags(["cfitsio", "fftw"])
+        xspectrampoline.get_linker_flags(["cfitsio", "fftw3"])
 
     Raises an `UnknownLibrary` exception if the library is not distributed by
     xspectrampoline. Use `list_libraries` to list all libraries that can be
     used as arguments to this function.
 
-    The function accepts a single keyword argument `rpath_relative`, which is
+    The function accepts a keyword argument `rpath_relative`, which is
     used to control whether the rpath linker option should use absolute paths
     (default, `rpath_relative = False`), or relative paths based on `$ORIGIN`.
     The latter should be more portable between different machines, allowing
@@ -128,6 +134,9 @@ def get_linker_flags(libraries: list[str], rpath_relative: bool = False) -> list
     target machine. The first option will prevent any compiled binaries from
     being relocatable between machines, but is guaranteed to work on your
     machine.
+
+    The `target` keyword argument can be used to specify what the target
+    operating system is.
     """
     available_libraries = list_libraries()
     selected_libraries = set()
@@ -151,7 +160,10 @@ def get_linker_flags(libraries: list[str], rpath_relative: bool = False) -> list
     linker_flags = list(selected_libraries)
 
     if rpath_relative:
-        rpath_flag = f"-Wl,-rpath,$ORIGIN/../xspectrampoline/{LIBXSPEC}/lib"
+        if _target_is_macos(target):
+            rpath_flag = f"-Wl,-rpath,@loader_path/../xspectrampoline/{LIBXSPEC}/lib"
+        else:
+            rpath_flag = f"-Wl,-rpath,$ORIGIN/../xspectrampoline/{LIBXSPEC}/lib"
     else:
         rpath_flag = f"-Wl,-rpath,{lib_path}"
 
